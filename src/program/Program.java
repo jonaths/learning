@@ -8,6 +8,7 @@ package program;
 
 import action.Action;
 import java.util.ArrayList;
+import mdp.MDP;
 import state.State;
 import world.LineWorld;
 
@@ -25,8 +26,11 @@ public class Program {
         LineWorld lineworld = new LineWorld("myline",4);
         lineworld.setup();
         
-        System.out.println(lineworld.isValidMove(3, 2));
+        lineworld.setOneReward(2, 3, (float) 1.0);
+        lineworld.setOneReward(3, 4, (float) 3.0);
+        lineworld.setOneReward(4, 4, (float) 1.0);
         
+        AMDP mdp = new AMDP(1,lineworld.getStates(),lineworld.getActions());
         
     }
     

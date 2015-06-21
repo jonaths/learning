@@ -53,7 +53,7 @@ public class LineWorld extends World {
                 validMoves.put(i, valid);
             } else if (i == size) {
                 ArrayList<Object> valid = new ArrayList<>();
-                valid.add(i - 1);
+                valid.add(i);
                 validMoves.put(i, valid);
             } else {
                 ArrayList<Object> valid = new ArrayList<>();
