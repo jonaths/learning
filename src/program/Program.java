@@ -8,6 +8,8 @@ package program;
 
 import action.Action;
 import java.util.ArrayList;
+import java.util.HashMap;
+import learning.QLearning;
 import mdp.MDP;
 import state.State;
 import world.LineWorld;
@@ -30,8 +32,32 @@ public class Program {
         lineworld.setOneReward(3, 4, (float) 3.0);
         lineworld.setOneReward(4, 4, (float) 1.0);
         
-        AMDP mdp = new AMDP(1,lineworld.getStates(),lineworld.getActions());
+        Object initialState = 1;
         
+        AMDP mdp = new AMDP(initialState,lineworld.getStates(),lineworld.getActions());
+        
+        QLearning q = new QLearning(0.5,0.9,1.0,Program.objectToString(lineworld.getValidMoves()));
+        String action = q.chooseAction(initialState.toString(), "epsilongreedy");
+        System.out.println(action);
+
+        
+    }
+    
+    /**
+     * Helper: convierte HashMap<Object,ArrayList<Object>> a HashMap<String,ArrayList<String>>
+     * @param objects
+     * @return 
+     */
+    public static HashMap<String,ArrayList<String>> objectToString(HashMap<Object,ArrayList<Object>> objects){
+        HashMap<String,ArrayList<String>> list = new HashMap<>();
+        for(Object o : objects.keySet()){
+            ArrayList<String> a = new ArrayList<>();
+            for(Object p : objects.get(o)){
+                a.add(p.toString());
+            }
+            list.put(o.toString(), a);
+        }
+        return list;
     }
     
 }
