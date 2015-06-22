@@ -122,7 +122,9 @@ public class QLearning {
         // 1 - probLearn. Con probLearn experimenta aleatoriamente
         if ("epsilongreedy".equals(criteria)) {
             if (Math.random() < this.aprobLearn) {
-                action = this.aactionslist.get(state).get(myRandomizer.nextInt(this.aactionslist.size()));
+                int inner = myRandomizer.nextInt(this.aactionslist.get(state).size());
+                System.out.println(this.aactionslist+" "+state+" "+this.aactionslist.get(state)+" "+inner);
+                action = this.aactionslist.get(state).get(inner);
             } else {
                 action = getQMaxAction(state);
             }
