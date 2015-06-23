@@ -20,7 +20,7 @@ public abstract class World {
     String name;
     State state;
     Action action;
-    HashMap<Object,ArrayList<Object>> validMoves;
+    HashMap<Object,HashMap<Object,String>> validMoves;
     HashMap<Object,HashMap<Object,Float>> rewards;
     
 
@@ -72,7 +72,7 @@ public abstract class World {
     public void setRewards(float r){
         for(Object j : validMoves.keySet()){
             HashMap<Object,Float> a = new HashMap<>();
-            for (Object k : validMoves.get(j)){
+            for (Object k : validMoves.get(j).keySet()){
                 a.put(k, r);
             }
             rewards.put(j, a);
@@ -94,13 +94,13 @@ public abstract class World {
         }
     }
     
-    public HashMap<Object,ArrayList<Object>> getValidMoves(){
+    public HashMap<Object,HashMap<Object,String>> getValidMoves(){
         return this.validMoves;
     }
     
     public boolean isValidMove(Object current, Object next){
-        return (validMoves.containsKey(current) && validMoves.get(current).contains(next));
+        return (validMoves.containsKey(current) && validMoves.get(current).containsKey(next));
     }
     
-    public abstract float getReward(Object current, String action, Object next);
+    public abstract float getReward(Object current, String action);
 }

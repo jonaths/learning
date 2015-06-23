@@ -7,6 +7,7 @@ package world;
 
 import action.Action;
 import java.util.ArrayList;
+import java.util.HashMap;
 import state.State;
 
 /**
@@ -48,24 +49,27 @@ public class LineWorld extends World {
         for (Object s : state.getStateList()) {
             int i = (int) s;
             if (i == 1) {
-                ArrayList<Object> valid = new ArrayList<>();
-                valid.add(i + 1);
+                HashMap<Object,String> valid = new HashMap<>();
+                valid.put(i + 1, "right");
                 validMoves.put(i, valid);
             } else if (i == size) {
-                ArrayList<Object> valid = new ArrayList<>();
-                valid.add(i);
+                HashMap<Object,String> valid = new HashMap<>();
+                valid.put(i + 0,"right");
+                valid.put(i - 1,"left");
+                validMoves.put(i, valid);
+                
                 validMoves.put(i, valid);
             } else {
-                ArrayList<Object> valid = new ArrayList<>();
-                valid.add(i - 1);
-                valid.add(i + 1);
+                HashMap<Object,String> valid = new HashMap<>();
+                valid.put(i - 1,"left");
+                valid.put(i + 1,"right");
                 validMoves.put(i, valid);
             }
         }
     }
 
     @Override
-    public float getReward(Object current, String action, Object next) {
+    public float getReward(Object current, String action) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

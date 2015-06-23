@@ -22,8 +22,8 @@ public abstract class MDP {
     private ArrayList actionLog = new ArrayList();
     private ArrayList rewardLog = new ArrayList();
     private ArrayList stateLog = new ArrayList();
-    
-    private int updateCount; 
+
+    private int updateCount;
 
     public MDP(Object initState, State states, Action actions) {
         this.initState = initState;
@@ -33,41 +33,35 @@ public abstract class MDP {
     }
 
     /**
-     * Updates MDP: executed execAction and obtained reward, now in state newState.
-     * The MDP is updated only if the action and state exists
-     * @param execAction 
+     * Updates MDP: executed execAction and obtained reward, now in state
+     * newState. The MDP is updated only if the action and state exists
+     *
+     * @param execAction
      * @param reward
      * @param newState
-     * @return 
+     * @return
      */
-    public boolean update(String execAction, float reward, Object newState) {
-        
-        if (this.states.getStateList().contains(newState) && this.actions.getActionList().contains(execAction)) {
-            this.actionLog.add(execAction);
-            this.rewardLog.add(reward);
-            this.stateLog.add(newState);
-            this.updateCount++;
-            return true;
-        }
-        return false;
+    public void update(String execAction, float reward, Object newState) {
+        actionLog.add(execAction);
+        rewardLog.add(reward);
+        stateLog.add(newState);
+        updateCount++;
     }
-    
-    public int getUpdateCount(){
+
+    public int getUpdateCount() {
         return this.updateCount;
     }
-    
-    public String getCurrentAction(){
-        return (String) this.actionLog.get(this.updateCount-1);
+
+    public String getCurrentAction() {
+        return (String) this.actionLog.get(this.updateCount - 1);
     }
-    
-    public Object getCurrentState(){
-        return this.stateLog.get(this.updateCount-1);
+
+    public Object getCurrentState() {
+        return this.stateLog.get(this.updateCount - 1);
     }
-    
-    public float getCurrentReward(){
-        return (float) this.rewardLog.get(this.updateCount-1);
+
+    public float getCurrentReward() {
+        return (float) this.rewardLog.get(this.updateCount - 1);
     }
-    
-    
-    
+
 }

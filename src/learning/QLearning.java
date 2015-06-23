@@ -3,15 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package learning;
 
 /**
- * QLearning
- * Implementación del Algoritmo de QLearning. 
- * 
+ * QLearning Implementación del Algoritmo de QLearning.
+ *
  */
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -19,6 +16,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -33,7 +33,7 @@ public class QLearning {
     private double agamma;
 
     // Lista de acciones
-    HashMap<String,ArrayList<String>> aactionslist = new HashMap<>();
+    HashMap<String, HashMap<String, String>> aactionslist = new HashMap<>();
     private final HashMap<Integer, HashMap<String, String>> actionLog;
     private int acounter;
 
@@ -48,7 +48,7 @@ public class QLearning {
      * @param probLearn: la probabilidad de que explote o aprenda
      * @param actionslist: una lista con las posibles acciones
      */
-    public QLearning(double alpha, double gamma, double probLearn, HashMap<String,ArrayList<String>> actionslist) {
+    public QLearning(double alpha, double gamma, double probLearn, HashMap<String, HashMap<String, String>> actionslist) {
         aalpha = alpha;
         agamma = gamma;
         aqReward = new HashMap<String, HashMap<String, Double>>();
@@ -108,13 +108,14 @@ public class QLearning {
         return max;
     }
 
-    public String chooseAction(String state, String criteria) {
-        String action = "none";
+    public HashMap<String,String> chooseAction(String state, String criteria) {
         Random myRandomizer = new Random();
+        HashMap<String,String> result = new HashMap<>();
+
 
         // Recupera la accion con la maxima recompensa
         if ("max".equals(criteria)) {
-            action = getQMaxAction(state);
+            result = getQMaxAction(state);
 
         }
 
@@ -122,53 +123,78 @@ public class QLearning {
         // 1 - probLearn. Con probLearn experimenta aleatoriamente
         if ("epsilongreedy".equals(criteria)) {
             if (Math.random() < this.aprobLearn) {
-                int inner = myRandomizer.nextInt(this.aactionslist.get(state).size());
-                System.out.println(this.aactionslist+" "+state+" "+this.aactionslist.get(state)+" "+inner);
-                action = this.aactionslist.get(state).get(inner);
+                result = this.getRandomActionFromState(state);
             } else {
-                action = getQMaxAction(state);
+                result = getQMaxAction(state);
             }
         }
 
         // Colocar aqui cualquier otro criterio para recuperar la accion
         // i.e. epsilon greedy, etc. 
         // Actualiza el log de acciones e incrementa el contador
-        HashMap<String, String> entry = new HashMap<String, String>();
-        entry.put("State", state);
-        entry.put("Action", action);
-        this.actionLog.put(this.acounter, entry);
+        this.actionLog.put(this.acounter, result);
         this.acounter += 1;
 
         // Si el estado no existe regresa "none". Si esto sucede escoge aleatoriamente
         // una accion de entre la lista disponible. 
-        if ("none".equals(action)) {
-            action = this.aactionslist.get(state).get(myRandomizer.nextInt(this.aactionslist.size()));
+        if (result.isEmpty()) {
+            result = this.getRandomActionFromState(state);
         }
 
-        return action;
+        return result;
+    }
+
+    /**
+     * Recupera una acción aleatoria desde disponible en state
+     * @param state
+     * @return 
+     */
+    public HashMap<String,String> getRandomActionFromState(String state) {
+        HashMap<String,String> result = new HashMap<>();
+        Random random = new Random();
+        List<String> keys = new ArrayList<>(this.aactionslist.get(state).keySet());
+        String randomKey = keys.get(random.nextInt(keys.size()));
+        String value = this.aactionslist.get(state).get(randomKey);
+        result.put("nextState", randomKey);
+        result.put("action", value);
+        return result;
     }
 
     // Recupera el valor numerico de la accion con el mayor valor q en state
-    public String getQMaxAction(String state) {
-        double max = 0.0;
-        String action = "none";
+    public HashMap<String,String> getQMaxAction(String state) {
+        HashMap<String,String> result = new HashMap<>();
+        String maxIndex = "none";
+        double maxValue = 0.0;
+        
         boolean started = false;
         HashMap<String, Double> rewards = this.aqReward.get(state);
         if (rewards != null) {
             for (String a : rewards.keySet()) {
                 if (started == false) {
-                    max = rewards.get(a);
-                    action = a;
+                    maxIndex = a;
+                    maxValue = rewards.get(a);
                     started = true;
                 }
-                if (rewards.get(a) > max) {
-                    max = rewards.get(a);
-                    action = a;
+                if (rewards.get(a) > maxValue) {
+                    maxIndex = a;
+                    maxValue = rewards.get(a);
                 }
             }
         }
-        return action;
+        String nextState = (String) QLearning.getKeyFromValue(aactionslist.get(state), maxIndex);
+        result.put("nextState", nextState);
+        result.put("action", maxIndex);
+        return result;
     }
+    
+    public static Object getKeyFromValue(Map hm, Object value) {
+        for (Object o : hm.keySet()) {
+          if (hm.get(o).equals(value)) {
+            return o;
+          }
+        }
+        return null;
+    }   
 
     // Actualiza el valor de alpha    
     public void updateAlpha(double alpha) {
@@ -179,7 +205,7 @@ public class QLearning {
     public void updateGamma(double gamma) {
         this.agamma = gamma;
     }
-    
+
     public void updateProbLearn(double probLearn) {
         this.aprobLearn = probLearn;
     }
@@ -226,7 +252,7 @@ public class QLearning {
         saveToDisk(this.aqReward, name + "_rewards.dat");
         saveToDisk(this.aqCount, name + "_count.dat");
     }
-    
+
     public void readQLearning(String name) {
         this.aqReward = getFromDisk(name + "_rewards.dat");
         this.aqCount = getFromDisk(name + "_count.dat");

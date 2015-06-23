@@ -37,8 +37,13 @@ public class Program {
         AMDP mdp = new AMDP(initialState,lineworld.getStates(),lineworld.getActions());
         
         QLearning q = new QLearning(0.5,0.9,1.0,Program.objectToString(lineworld.getValidMoves()));
-        String action = q.chooseAction(initialState.toString(), "epsilongreedy");
+        HashMap<String,String> action = q.chooseAction(initialState.toString(), "epsilongreedy");
+        mdp.update("right", 10, "2");
+        
         System.out.println(action);
+        System.out.println(mdp.getCurrentAction());
+        System.out.println(mdp.getCurrentState());
+        System.out.println(mdp.getCurrentReward());
 
         
     }
@@ -48,12 +53,12 @@ public class Program {
      * @param objects
      * @return 
      */
-    public static HashMap<String,ArrayList<String>> objectToString(HashMap<Object,ArrayList<Object>> objects){
-        HashMap<String,ArrayList<String>> list = new HashMap<>();
+    public static HashMap<String,HashMap<String,String>> objectToString(HashMap<Object,HashMap<Object,String>> objects){
+        HashMap<String,HashMap<String,String>> list = new HashMap<>();
         for(Object o : objects.keySet()){
-            ArrayList<String> a = new ArrayList<>();
-            for(Object p : objects.get(o)){
-                a.add(p.toString());
+            HashMap<String,String> a = new HashMap<>();
+            for(Object p : objects.get(o).keySet()){
+                a.put(p.toString(),objects.get(o).get(p));
             }
             list.put(o.toString(), a);
         }
