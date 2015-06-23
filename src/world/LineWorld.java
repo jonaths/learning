@@ -46,24 +46,22 @@ public class LineWorld extends World {
      */
     @Override
     public void setValidMoves() {
-        for (Object s : state.getStateList()) {
-            int i = (int) s;
+        for (Integer s : state.getStateList().keySet()) {
+            int i = (int) state.getStateList().get(s);
             if (i == 1) {
-                HashMap<Object,String> valid = new HashMap<>();
-                valid.put(i + 1, "right");
-                validMoves.put(i, valid);
+                HashMap<Integer,String> valid = new HashMap<>();
+                valid.put(s + 1, "right");
+                validMoves.put(s, valid);
             } else if (i == size) {
-                HashMap<Object,String> valid = new HashMap<>();
-                valid.put(i + 0,"right");
-                valid.put(i - 1,"left");
-                validMoves.put(i, valid);
-                
-                validMoves.put(i, valid);
+                HashMap<Integer,String> valid = new HashMap<>();
+                valid.put(s + 0,"right");
+                valid.put(s - 1,"left");
+                validMoves.put(s, valid);
             } else {
-                HashMap<Object,String> valid = new HashMap<>();
-                valid.put(i - 1,"left");
-                valid.put(i + 1,"right");
-                validMoves.put(i, valid);
+                HashMap<Integer,String> valid = new HashMap<>();
+                valid.put(s - 1,"left");
+                valid.put(s + 1,"right");
+                validMoves.put(s, valid);
             }
         }
     }

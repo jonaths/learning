@@ -6,6 +6,7 @@
 package state;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -14,28 +15,31 @@ import java.util.ArrayList;
 public class State {
     
     
-    private ArrayList states;
+    private final HashMap<Integer,Object> states;
 
     // A state is an Object, states contains all possible states
-    public State(ArrayList stateList) {
+    public State(HashMap<Integer,Object> stateList) {
         this.states = stateList;
     }
     
     // Create then add with addState
     public State(){
-        states = new ArrayList<>();
+        states = new HashMap<>();
     }
 
-    public ArrayList getStateList() {
+    public HashMap<Integer,Object> getStateList() {
         return this.states;
     }
     
     // Verifies if state does not exist in states, then add it
     public void addState(Object state){
-        if(!this.states.contains(state)){
-            this.states.add(state);
+        if(!this.states.containsValue(state)){
+            this.states.put(states.size(), state);
         }
-        
+    }
+    
+    public Object retrieveByIndex(int i){
+        return states.get(i);
     }
 
 }

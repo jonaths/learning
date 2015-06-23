@@ -20,8 +20,8 @@ public abstract class World {
     String name;
     State state;
     Action action;
-    HashMap<Object,HashMap<Object,String>> validMoves;
-    HashMap<Object,HashMap<Object,Float>> rewards;
+    HashMap<Integer,HashMap<Integer,String>> validMoves;
+    HashMap<Integer,HashMap<Integer,Float>> rewards;
     
 
     public World(String name){
@@ -56,7 +56,7 @@ public abstract class World {
         return this.action;
     }
     
-    public HashMap<Object,HashMap<Object,Float>> getRewards(){
+    public HashMap<Integer,HashMap<Integer,Float>> getRewards(){
         return this.rewards;
     }
     
@@ -70,9 +70,9 @@ public abstract class World {
      * @param r 
      */
     public void setRewards(float r){
-        for(Object j : validMoves.keySet()){
-            HashMap<Object,Float> a = new HashMap<>();
-            for (Object k : validMoves.get(j).keySet()){
+        for(Integer j : validMoves.keySet()){
+            HashMap<Integer,Float> a = new HashMap<>();
+            for (Integer k : validMoves.get(j).keySet()){
                 a.put(k, r);
             }
             rewards.put(j, a);
@@ -85,16 +85,17 @@ public abstract class World {
      * @param k
      * @param r 
      */
-    public void setOneReward(Object j, Object k, float r){
-        if(rewards.containsKey(j) && rewards.get(j).containsKey(k)){
-            rewards.get(j).put(k, r);
-            }
-        else{
-            throw new IllegalArgumentException("transition "+"("+j+","+k+")"+" does not exist");
+    public void setOneReward(int j, int k, float r){
+        if(!rewards.containsKey(j)){
+            throw new IllegalArgumentException("state j: "+j+" does not exist");
         }
+        if(!rewards.get(j).containsKey(k)){
+            throw new IllegalArgumentException("state k: "+k+" does not exist");
+        }
+        rewards.get(j).put(k, r);
     }
     
-    public HashMap<Object,HashMap<Object,String>> getValidMoves(){
+    public HashMap<Integer,HashMap<Integer,String>> getValidMoves(){
         return this.validMoves;
     }
     
