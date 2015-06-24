@@ -12,6 +12,7 @@ import learning.QLearning;
 import mdp.MDP;
 import state.State;
 import world.LineWorld;
+import helpers.General;
 
 /**
  *
@@ -23,6 +24,14 @@ public class Program {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        lineworld1();
+
+    }
+    
+    /**
+     * Experimento inicial
+     */
+    public static void lineworld1(){
         System.out.println("Inicio... ");
         LineWorld lineworld = new LineWorld("myline", 4);
         lineworld.setup();
@@ -35,17 +44,14 @@ public class Program {
         lineworld.setOneReward(3, 2, (float) 0.0);
         lineworld.setOneReward(3, 3, (float) 2.0);
         
-
         int initialState = 0;
 
         AMDP mdp = new AMDP(initialState, lineworld.getStates(), lineworld.getActions());
-        QLearning q = new QLearning(0.5, 0.9, 1.0, Program.objectToString(lineworld.getValidMoves()));
+        QLearning q = new QLearning(0.5, 0.9, 1.0, General.objectToString(lineworld.getValidMoves()),3);
 
         int stateNow = initialState;
         HashMap<String, String> operation = q.chooseAction(Integer.toString(stateNow), "epsilongreedy");
         
-        System.out.println(operation);
-
         for (int i = 1; i < 30; i++) {
 
             String action = operation.get("action");
@@ -61,26 +67,12 @@ public class Program {
             operation = q.chooseAction(Integer.toString(stateNow), "epsilongreedy");
 
         }
-
+        
+        System.out.println(mdp.getRewardLog());
+        System.out.println(mdp.getActionLog());
+        
     }
 
-    /**
-     * Helper: convierte HashMap<Object,ArrayList<Object>> a
-     * HashMap<String,ArrayList<String>> @param ob
-     *
-     * jects
-     * @return
-     */
-    public static HashMap<String, HashMap<String, String>> objectToString(HashMap<Integer, HashMap<Integer, String>> objects) {
-        HashMap<String, HashMap<String, String>> list = new HashMap<>();
-        for (Object o : objects.keySet()) {
-            HashMap<String, String> a = new HashMap<>();
-            for (Object p : objects.get(o).keySet()) {
-                a.put(p.toString(), objects.get(o).get(p));
-            }
-            list.put(o.toString(), a);
-        }
-        return list;
-    }
+    
 
 }

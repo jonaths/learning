@@ -51,6 +51,14 @@ public abstract class MDP {
     public int getUpdateCount() {
         return this.updateCount;
     }
+    
+    public ArrayList getRewardLog() {
+        return this.rewardLog;
+    }
+    
+    public ArrayList getActionLog() {
+        return this.actionLog;
+    }
 
     public String getCurrentAction() {
         return (String) this.actionLog.get(this.updateCount - 1);

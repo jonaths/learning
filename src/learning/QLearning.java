@@ -39,6 +39,7 @@ public class QLearning {
 
     // Probabilidad de aprender (al usar epsilon greedy)
     double aprobLearn;
+    int amode;
 
     /**
      * Constructor
@@ -47,15 +48,21 @@ public class QLearning {
      * @param gamma
      * @param probLearn: la probabilidad de que explote o aprenda
      * @param actionslist: una lista con las posibles acciones
+     * @param mode : 
+     *      0 - utiliza el valor del constructor siempre, 
+     *      1 - explora siempre (ignora valor del constructor), 
+     *      2 - explota siempre (ignora valor del constructor), 
+     *      3 o cualquier otro - probLearn comienza en uno y disminuye con visitas a estados 
      */
-    public QLearning(double alpha, double gamma, double probLearn, HashMap<String, HashMap<String, String>> actionslist) {
+    public QLearning(double alpha, double gamma, double probLearn, HashMap<String, HashMap<String, String>> actionslist, int mode) {
         aalpha = alpha;
         agamma = gamma;
-        aqReward = new HashMap<String, HashMap<String, Double>>();
-        aqCount = new HashMap<String, HashMap<String, Integer>>();
-        actionLog = new HashMap<Integer, HashMap<String, String>>();
+        aqReward = new HashMap<>();
+        aqCount = new HashMap<>();
+        actionLog = new HashMap<>();
         aactionslist = actionslist;
         aprobLearn = probLearn;
+        amode = mode;
     }
 
     public void updateQ(String nowstate, String action, double reward, String nextstate) {
@@ -68,7 +75,6 @@ public class QLearning {
             // Crea nueva accion en el nowstate para valores y conteo
             this.aqReward.get(nowstate).put(action, reward);
             this.aqCount.get(nowstate).put(action, 0);
-
         }
 
         // Actualiza contador de visitas
@@ -80,8 +86,12 @@ public class QLearning {
         double maxqval = getQMaxActionVal(nextstate);
 
         // Calcula nuevo valor de Q y actualiza la tabla
-        double newqval = (1 - this.aalpha) * currentqval + this.aalpha * (reward + this.agamma * maxqval);
+        double newqval = (1 - getUpdatedAlpha()) * currentqval + getUpdatedAlpha() * (reward + this.agamma * maxqval);
         this.aqReward.get(nowstate).put(action, newqval);
+    }
+    
+    public double getUpdatedAlpha(){
+        return this.aalpha;
     }
 
     // Recupera el valor almacenado en state/action de la tabla Q
@@ -109,23 +119,24 @@ public class QLearning {
     }
 
     public HashMap<String,String> chooseAction(String state, String criteria) {
-        Random myRandomizer = new Random();
         HashMap<String,String> result = new HashMap<>();
-
 
         // Recupera la accion con la maxima recompensa
         if ("max".equals(criteria)) {
             result = getQMaxAction(state);
-
         }
 
         // Recupera la accion con maxima recompensa con probabilidad
         // 1 - probLearn. Con probLearn experimenta aleatoriamente
         if ("epsilongreedy".equals(criteria)) {
-            if (Math.random() < this.aprobLearn) {
+            double random = Math.random();
+            System.out.println("random: "+random);
+            if (random < getUpdatedProbLearn(state)) {
+                System.out.println("random: "+random);
                 result = this.getRandomActionFromState(state);
             } else {
                 result = getQMaxAction(state);
+                System.out.println("maximize");
             }
         }
 
@@ -142,6 +153,23 @@ public class QLearning {
         }
 
         return result;
+    }
+    
+    public double getUpdatedProbLearn(String state){
+         switch (amode) {
+            case 0:
+                return this.aprobLearn;
+            case 1: 
+                return 1;
+            case 2: 
+                return 0;
+            default: 
+                double value = 1.0/(1.0+this.getQCountsByState(state)/1.0);
+                System.out.println("ZZ: "+state);
+                System.out.println("YY: "+this.getQCountsByState(state));
+                System.out.println("XX: "+value);
+                return value;
+        }
     }
 
     /**
@@ -209,6 +237,11 @@ public class QLearning {
     public void updateProbLearn(double probLearn) {
         this.aprobLearn = probLearn;
     }
+    
+    // Actualiza el valor de gamma    
+    public void updateMode(int mode) {
+        this.amode = mode;
+    }
 
     // Regresa la tabla Q completa
     public HashMap<String, HashMap<String, Double>> getQRewards() {
@@ -220,7 +253,11 @@ public class QLearning {
         return this.aqCount;
     }
 
-    // Devuelve el numero de veces que se ha visitado state
+    /**
+     * Devuelve el numero de veces que se ha visitado state
+     * @param state : string con el nombre del estado
+     * @return 
+     */ 
     public Integer getQCountsByState(String state) {
         HashMap<String, Integer> counts = this.aqCount.get(state);
         int sum = 0;
