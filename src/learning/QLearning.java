@@ -130,13 +130,13 @@ public class QLearning {
         // 1 - probLearn. Con probLearn experimenta aleatoriamente
         if ("epsilongreedy".equals(criteria)) {
             double random = Math.random();
-            System.out.println("random: "+random);
+            //System.out.println("random: "+random);
             if (random < getUpdatedProbLearn(state)) {
-                System.out.println("random: "+random);
+                //System.out.println("random: "+random);
                 result = this.getRandomActionFromState(state);
             } else {
                 result = getQMaxAction(state);
-                System.out.println("maximize");
+                //System.out.println("maximize");
             }
         }
 
@@ -165,9 +165,9 @@ public class QLearning {
                 return 0;
             default: 
                 double value = 1.0/(1.0+this.getQCountsByState(state)/1.0);
-                System.out.println("ZZ: "+state);
-                System.out.println("YY: "+this.getQCountsByState(state));
-                System.out.println("XX: "+value);
+                //System.out.println("ZZ: "+state);
+                //System.out.println("YY: "+this.getQCountsByState(state));
+                //System.out.println("XX: "+value);
                 return value;
         }
     }

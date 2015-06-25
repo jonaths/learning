@@ -19,9 +19,9 @@ public abstract class MDP {
     private final State states;
     private final Action actions;
 
-    private ArrayList actionLog = new ArrayList();
-    private ArrayList rewardLog = new ArrayList();
-    private ArrayList stateLog = new ArrayList();
+    private ArrayList<String> actionLog = new ArrayList();
+    private ArrayList<Double> rewardLog = new ArrayList();
+    private ArrayList<Object> stateLog = new ArrayList();
 
     private int updateCount;
 
@@ -41,7 +41,7 @@ public abstract class MDP {
      * @param newState
      * @return
      */
-    public void update(String execAction, float reward, Object newState) {
+    public void update(String execAction, double reward, Object newState) {
         actionLog.add(execAction);
         rewardLog.add(reward);
         stateLog.add(newState);
@@ -68,8 +68,8 @@ public abstract class MDP {
         return this.stateLog.get(this.updateCount - 1);
     }
 
-    public float getCurrentReward() {
-        return (float) this.rewardLog.get(this.updateCount - 1);
+    public double getCurrentReward() {
+        return this.rewardLog.get(this.updateCount - 1);
     }
 
 }

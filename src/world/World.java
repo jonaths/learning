@@ -21,7 +21,7 @@ public abstract class World {
     State state;
     Action action;
     HashMap<Integer,HashMap<Integer,String>> validMoves;
-    HashMap<Integer,HashMap<Integer,Float>> rewards;
+    HashMap<Integer,HashMap<Integer,Double>> rewards;
     
 
     public World(String name){
@@ -41,7 +41,7 @@ public abstract class World {
         System.out.println("World.setup::actions set: "+getActions().getActionList());
         setValidMoves();
         System.out.println("World.setup::valid moves set: "+getValidMoves());
-        setRewards((float) 0.0);
+        setRewards(0.0);
         System.out.println("World.setup::default rewards set: "+getRewards());
     }
     
@@ -56,7 +56,7 @@ public abstract class World {
         return this.action;
     }
     
-    public HashMap<Integer,HashMap<Integer,Float>> getRewards(){
+    public HashMap<Integer,HashMap<Integer,Double>> getRewards(){
         return this.rewards;
     }
     
@@ -69,9 +69,9 @@ public abstract class World {
      * Asigna una recompensa r a cada uno de las transiciones validas
      * @param r 
      */
-    public void setRewards(float r){
+    public void setRewards(Double r){
         for(Integer j : validMoves.keySet()){
-            HashMap<Integer,Float> a = new HashMap<>();
+            HashMap<Integer,Double> a = new HashMap<>();
             for (Integer k : validMoves.get(j).keySet()){
                 a.put(k, r);
             }
@@ -85,7 +85,7 @@ public abstract class World {
      * @param k
      * @param r 
      */
-    public void setOneReward(int j, int k, float r){
+    public void setOneReward(int j, int k, double r){
         if(!rewards.containsKey(j)){
             throw new IllegalArgumentException("state j: "+j+" does not exist");
         }
