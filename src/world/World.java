@@ -103,5 +103,7 @@ public abstract class World {
         return (validMoves.containsKey(current) && validMoves.get(current).containsKey(next));
     }
     
+    public abstract boolean setTargetStates(ArrayList<Integer> targets);
+    
     public abstract float getReward(Object current, String action);
 }

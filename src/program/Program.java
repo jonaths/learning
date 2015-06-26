@@ -12,6 +12,7 @@ import java.util.HashMap;
 import learning.QLearning;
 import mdp.MDP;
 import world.LineWorld;
+import world.MineWorld;
 import world.World;
 
 /**
@@ -25,7 +26,14 @@ public class Program {
      */
     public static void main(String[] args) {
         
-        experiment1();   
+        
+        System.out.println("Inicio... ");
+        MineWorld mineworld = new MineWorld("myline", 4);
+        mineworld.setup();
+        
+        ArrayList<Integer> target = new ArrayList<>();
+        target.add(1);
+        mineworld.setTargetStates(target);
 
     }
     
