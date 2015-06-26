@@ -55,7 +55,7 @@ public class LineWorld extends World {
             } else if (i == size) {
                 HashMap<Integer,String> valid = new HashMap<>();
                 valid.put(s + 0,"right");
-                valid.put(s - 1,"left");
+                valid.put(s + 0,"left");
                 validMoves.put(s, valid);
             } else {
                 HashMap<Integer,String> valid = new HashMap<>();

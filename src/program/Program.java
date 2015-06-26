@@ -25,6 +25,11 @@ public class Program {
      */
     public static void main(String[] args) {
         
+        experiment1();   
+
+    }
+    
+    public static void experiment1(){
         HashMap<Integer,ArrayList<Double>> results = new HashMap<>();
         
         // Banco de experimentos
@@ -52,7 +57,6 @@ public class Program {
 
         // Grafica
         Plots.plotSimpleLineXY(data, seriesNames, "titulo", "eje x", "eje y");
-
     }
 
     /**
@@ -65,18 +69,17 @@ public class Program {
         LineWorld lineworld = new LineWorld("myline", 4);
         lineworld.setup();
 
-        lineworld.setOneReward(0, 1, (float) 1.0);
-        lineworld.setOneReward(1, 0, (float) 0.0);
-        lineworld.setOneReward(1, 2, (float) 1.0);
-        lineworld.setOneReward(2, 1, (float) 0.0);
-        lineworld.setOneReward(2, 3, (float) 1.0);
-        lineworld.setOneReward(3, 2, (float) 0.0);
-        lineworld.setOneReward(3, 3, (float) 2.0);
+        lineworld.setOneReward(0, 1, (float) +2.0);
+        lineworld.setOneReward(1, 0, (float) -1.0);
+        lineworld.setOneReward(1, 2, (float) +2.0);
+        lineworld.setOneReward(2, 1, (float) -1.0);
+        lineworld.setOneReward(2, 3, (float) +2.0);
+        lineworld.setOneReward(3, 3, (float) +10.0);
 
         int initialState = 0;
 
         AMDP mdp = new AMDP(initialState, lineworld.getStates(), lineworld.getActions());
-        QLearning q = new QLearning(0.5, 0.9, 1.0, General.objectToString(lineworld.getValidMoves()), 3);
+        QLearning q = new QLearning(0.9, 0.5, 1.0, General.objectToString(lineworld.getValidMoves()), 3);
 
         int stateNow = initialState;
         HashMap<String, String> operation = q.chooseAction(Integer.toString(stateNow), "epsilongreedy");
@@ -85,20 +88,14 @@ public class Program {
 
             String action = operation.get("action");
             int stateNext = Integer.parseInt(operation.get("nextState"));
-//            System.out.println(lineworld.getRewards().get(stateNow).get(stateNext));
             double reward = lineworld.getRewards().get(stateNow).get(stateNext);
             mdp.update(action, (float) reward, stateNext);
             q.updateQ(Integer.toString(stateNow), action, reward, Integer.toString(stateNext));
-
-//            q.printQ();
 
             stateNow = stateNext;
             operation = q.chooseAction(Integer.toString(stateNow), "epsilongreedy");
 
         }
-
-//        System.out.println(mdp.getRewardLog());
-//        System.out.println(mdp.getActionLog());
 
         return mdp;
 
