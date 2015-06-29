@@ -10,6 +10,7 @@ import action.Action;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Set;
 import state.State;
 
 /**
@@ -173,19 +174,5 @@ public class MineWorld extends World{
         return result;
     }
 
-    @Override
-    public boolean setTargetStates(ArrayList<Integer> targets) {
-        for(Integer t : targets){
-            HashMap<Integer,String> currentMoves = this.validMoves.get(t);
-            System.out.println( currentMoves );
-            HashMap<Integer,String> newMoves = new HashMap<>();
-            for(Integer c : currentMoves.keySet()){
-                System.out.println(c+" "+currentMoves.get(c));
-                // Aqui hay un problema... varias acciones llevan al mismo estado.
-                // Como diablos programo eso
-            }
-        }
-        return true;
-    }
     
 }

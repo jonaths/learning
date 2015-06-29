@@ -26,17 +26,21 @@ public class Program {
      */
     public static void main(String[] args) {
         
-        
         System.out.println("Inicio... ");
         MineWorld mineworld = new MineWorld("myline", 4);
         mineworld.setup();
         
         ArrayList<Integer> target = new ArrayList<>();
-        target.add(1);
-        mineworld.setTargetStates(target);
+        target.add(2);
+        mineworld.setTargetStates(target,4.0);
+        System.out.println(mineworld.getValidMoves());
+        System.out.println(mineworld.getRewards());
 
     }
     
+    /**
+     * Banco de experimentos 1
+     */
     public static void experiment1(){
         HashMap<Integer,ArrayList<Double>> results = new HashMap<>();
         

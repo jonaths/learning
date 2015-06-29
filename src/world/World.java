@@ -9,6 +9,7 @@ package world;
 import action.Action;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import state.State;
 
 /**
@@ -103,7 +104,34 @@ public abstract class World {
         return (validMoves.containsKey(current) && validMoves.get(current).containsKey(next));
     }
     
-    public abstract boolean setTargetStates(ArrayList<Integer> targets);
+        public boolean setTargetStates(ArrayList<Integer> targets, double reward) {
+        // Para cada uno de los posibles estados finales
+        for(Integer t : targets){
+            
+            if(!this.stateExists(t)){
+                throw new IllegalArgumentException("state : " + t + " not in states");   
+            }
+            
+            Set keys = this.validMoves.get(t).keySet();
+            System.out.println(keys.iterator().next());
+            
+            // Establece que la única transición válida es hacia sí mismo
+            HashMap<Integer,String> newMoves = new HashMap<>();
+            newMoves.put(t, this.validMoves.get(t).get(keys.iterator().next()));
+            this.validMoves.put(t, newMoves);
+            
+            // Y establece la recompensa por hacer la transición
+            HashMap<Integer,Double> newRewards = new HashMap<>();
+            newRewards.put(t, reward);
+            this.rewards.put(t, newRewards);
+            
+        }
+        return true;
+    }
     
     public abstract float getReward(Object current, String action);
+    
+    public boolean stateExists(Integer state){
+        return this.state.getStateList().keySet().contains(state);
+    }
 }
